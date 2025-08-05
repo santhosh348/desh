@@ -45,7 +45,15 @@ import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { saveAs } from 'file-saver';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Helper function to normalize URLs
+const buildApiUrl = (endpoint) => {
+  // Get base URL and remove any trailing slashes
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'https://ecommerce-backend-bmyp.onrender.com/api').replace(/\/+$/, '');
+  // Remove leading and trailing slashes from endpoint
+  const normalizedEndpoint = endpoint.replace(/^\/+|\/+$/g, '');
+  // Combine with single slash
+  return `${baseUrl}/${normalizedEndpoint}`;
+};
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
@@ -84,7 +92,7 @@ const Dashboard = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/orders/`);
+      const response = await axios.get(buildApiUrl('orders'));
       setOrders(response.data);
     } catch (error) {
       showError('Failed to fetch orders', error);
@@ -96,7 +104,7 @@ const Dashboard = () => {
   const fetchOrderDetails = async (orderId) => {
     setDetailLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/orders/${orderId}/`);
+      const response = await axios.get(buildApiUrl(`orders/${orderId}`));
       setOrderDetails(response.data);
     } catch (error) {
       showError('Failed to fetch order details', error);
@@ -113,7 +121,7 @@ const Dashboard = () => {
   const syncAmazonOrders = async () => {
     setSyncing(true);
     try {
-      await axios.post(`${API_BASE_URL}/orders/sync/`);
+      await axios.post(buildApiUrl('orders/sync'));
       showSuccess('✅ Orders fetched and saved from Amazon.');
       setTimeout(fetchOrders, 3000);
     } catch (error) {
@@ -187,10 +195,10 @@ const Dashboard = () => {
   return (
     <Box sx={{ padding: '24px', backgroundColor: '#f5f7fa', minHeight: '100vh' }}>
       {/* Header and Actions */}
-      <Box sx={{
-        mb: 3,
-        display: 'flex',
-        justifyContent: 'space-between',
+      <Box sx={{ 
+        mb: 3, 
+        display: 'flex', 
+        justifyContent: 'space-between', 
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: 2
@@ -198,7 +206,7 @@ const Dashboard = () => {
         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
           Amazon Orders Dashboard
         </Typography>
-
+        
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             size="small"
@@ -210,14 +218,14 @@ const Dashboard = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ width: 250 }}
           />
-
+          
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Export to CSV">
               <IconButton onClick={exportToCSV} color="primary">
                 <ExportIcon />
               </IconButton>
             </Tooltip>
-
+            
             <Button
               variant="contained"
               color="primary"
@@ -256,7 +264,7 @@ const Dashboard = () => {
                     </TableHead>
                     <TableBody>
                       {currentOrders.map((order) => (
-                        <TableRow
+                        <TableRow 
                           key={order.order_id}
                           hover
                           onClick={() => handleOrderClick(order.order_id)}
@@ -279,19 +287,19 @@ const Dashboard = () => {
                                       {product.brand && <strong>{product.brand}</strong>} {product.title}
                                     </Typography>
                                     <Box sx={{ display: 'flex', mt: 1 }}>
-                                      <Chip
-                                        label={`ASIN: ${product.asin}`}
-                                        size="small"
+                                      <Chip 
+                                        label={`ASIN: ${product.asin}`} 
+                                        size="small" 
                                         sx={{ mr: 1 }}
                                       />
-                                      <Chip
-                                        label={`Qty: ${product.quantity}`}
-                                        size="small"
+                                      <Chip 
+                                        label={`Qty: ${product.quantity}`} 
+                                        size="small" 
                                         sx={{ mr: 1 }}
                                       />
-                                      <Chip
-                                        label={`$${product.price.toFixed(2)}`}
-                                        size="small"
+                                      <Chip 
+                                        label={`$${product.price.toFixed(2)}`} 
+                                        size="small" 
                                         color="primary"
                                       />
                                     </Box>
@@ -386,34 +394,34 @@ const Dashboard = () => {
                   </Typography>
                   <List>
                     <ListItem>
-                      <ListItemText
-                        primary="Order ID"
-                        secondary={orderDetails.order_id}
+                      <ListItemText 
+                        primary="Order ID" 
+                        secondary={orderDetails.order_id} 
                       />
                     </ListItem>
                     <Divider />
                     <ListItem>
-                      <ListItemText
-                        primary="Order Date"
-                        secondary={formatDate(orderDetails.order_date || orderDetails.purchase_date)}
+                      <ListItemText 
+                        primary="Order Date" 
+                        secondary={formatDate(orderDetails.order_date || orderDetails.purchase_date)} 
                       />
                     </ListItem>
                     <Divider />
                     {orderDetails.customer_name && (
                       <>
                         <ListItem>
-                          <ListItemText
-                            primary="Customer"
-                            secondary={orderDetails.customer_name}
+                          <ListItemText 
+                            primary="Customer" 
+                            secondary={orderDetails.customer_name} 
                           />
                         </ListItem>
                         <Divider />
                       </>
                     )}
                     <ListItem>
-                      <ListItemText
-                        primary="Payment Method"
-                        secondary={orderDetails.paymentMethod || 'N/A'}
+                      <ListItemText 
+                        primary="Payment Method" 
+                        secondary={orderDetails.paymentMethod || 'N/A'} 
                       />
                     </ListItem>
                   </List>
@@ -425,23 +433,23 @@ const Dashboard = () => {
                   {orderDetails.shipping_address ? (
                     <List>
                       <ListItem>
-                        <ListItemText
-                          primary="Address"
-                          secondary={`${orderDetails.shipping_address.City}, ${orderDetails.shipping_address.StateOrRegion}`}
+                        <ListItemText 
+                          primary="Address" 
+                          secondary={`${orderDetails.shipping_address.City}, ${orderDetails.shipping_address.StateOrRegion}`} 
                         />
                       </ListItem>
                       <Divider />
                       <ListItem>
-                        <ListItemText
-                          primary="ZIP Code"
-                          secondary={orderDetails.shipping_address.PostalCode}
+                        <ListItemText 
+                          primary="ZIP Code" 
+                          secondary={orderDetails.shipping_address.PostalCode} 
                         />
                       </ListItem>
                       <Divider />
                       <ListItem>
-                        <ListItemText
-                          primary="Country"
-                          secondary={orderDetails.shipping_address.CountryCode}
+                        <ListItemText 
+                          primary="Country" 
+                          secondary={orderDetails.shipping_address.CountryCode} 
                         />
                       </ListItem>
                     </List>
@@ -507,8 +515,8 @@ const Dashboard = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
+        <Alert 
+          onClose={handleCloseSnackbar} 
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >
