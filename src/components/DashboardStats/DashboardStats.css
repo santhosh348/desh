@@ -1,0 +1,52 @@
+.bg-gradient-blue {
+  background: linear-gradient(to right, #e3f2fd, #e0e7ff);
+}
+
+.bg-gradient-green {
+  background: linear-gradient(to right, #e8f5e9, #b2dfdb);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(to right, #f3e8ff, #fce4ec);
+}
+
+.card-hover {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-hover:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+
+.text-blue {
+  color: #2563eb;
+}
+
+.text-green {
+  color: #16a34a;
+}
+
+.text-purple {
+  color: #9333ea;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-800 {
+  color: #1f2937;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-bold {
+  font-weight: 700;
+}

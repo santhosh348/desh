@@ -44,14 +44,13 @@ import {
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { saveAs } from 'file-saver';
+import DashboardStats from '../../components/DashboardStats/DashboardStats';
+// import { formatCurrency } from '../../utils/utils';
 
 // Helper function to normalize URLs
 const buildApiUrl = (endpoint) => {
-  // Get base URL and remove any trailing slashes
   const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'https://ecommerce-backend-bmyp.onrender.com/api').replace(/\/+$/, '');
-  // Remove leading and trailing slashes from endpoint
   const normalizedEndpoint = endpoint.replace(/^\/+|\/+$/g, '');
-  // Combine with single slash
   return `${baseUrl}/${normalizedEndpoint}`;
 };
 
@@ -123,7 +122,9 @@ const Dashboard = () => {
     try {
       await axios.post(buildApiUrl('orders/sync'));
       showSuccess('✅ Orders fetched and saved from Amazon.');
-      setTimeout(fetchOrders, 3000);
+      setTimeout(() => {
+        fetchOrders();
+      }, 3000);
     } catch (error) {
       showError('Failed to sync Amazon orders', error);
     } finally {
@@ -239,6 +240,9 @@ const Dashboard = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Stats Section */}
+      <DashboardStats />
 
       {/* Orders Table */}
       <Grid container spacing={3}>
